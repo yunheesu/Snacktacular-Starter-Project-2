@@ -27,6 +27,10 @@ class Spot: NSObject, MKAnnotation { // NSObject 랑 MKAnnotation is needed when
         return coordinate.latitude
     }
     
+    var location: CLLocation { // get distance from one location to another location using this distance methods!
+        return CLLocation(latitude: latitude, longitude: longitude)
+    }
+    
     var title: String? {
         return name
     }

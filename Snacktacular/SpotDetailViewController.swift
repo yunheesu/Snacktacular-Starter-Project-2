@@ -129,7 +129,7 @@ extension SpotDetailViewController: GMSAutocompleteViewControllerDelegate {
     }
     
 }
-extension SpotDetailViewController: CLLocationManagerDelegate {
+extension SpotDetailViewController: CLLocationManagerDelegate { //from the website!
     
     func getLocation(){
         locationManager = CLLocationManager()

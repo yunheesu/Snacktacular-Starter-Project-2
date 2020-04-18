@@ -17,6 +17,7 @@
 		3E8390E5206597F600512DEA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3E8390E3206597F600512DEA /* Main.storyboard */; };
 		3E8390E7206597F600512DEA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3E8390E6206597F600512DEA /* Assets.xcassets */; };
 		3E8390EA206597F600512DEA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3E8390E8206597F600512DEA /* LaunchScreen.storyboard */; };
+		828A19F0244B4C9C0048D183 /* Double+roundTo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 828A19EF244B4C9C0048D183 /* Double+roundTo.swift */; };
 		82C0091A24436A86001B85F0 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 82C0091924436A86001B85F0 /* GoogleService-Info.plist */; };
 		82E0D06E244339DC00785B8C /* Spot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E0D06D244339DC00785B8C /* Spot.swift */; };
 		82E0D070244339F300785B8C /* Spots.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E0D06F244339F300785B8C /* Spots.swift */; };
@@ -37,6 +38,7 @@
 		3E8390E6206597F600512DEA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3E8390E9206597F600512DEA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3E8390EB206597F600512DEA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		828A19EF244B4C9C0048D183 /* Double+roundTo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+roundTo.swift"; sourceTree = "<group>"; };
 		82C0091924436A86001B85F0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		82E0D06D244339DC00785B8C /* Spot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spot.swift; sourceTree = "<group>"; };
 		82E0D06F244339F300785B8C /* Spots.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spots.swift; sourceTree = "<group>"; };
@@ -93,6 +95,7 @@
 				3E0F960B2065A17500AE450D /* SpotDetailViewController.swift */,
 				3E0F960D2065AB6400AE450D /* SpotReviewsTableViewCell.swift */,
 				3E0F960F2065AC1A00AE450D /* SpotPhotosCollectionViewCell.swift */,
+				828A19EF244B4C9C0048D183 /* Double+roundTo.swift */,
 				3E8390E3206597F600512DEA /* Main.storyboard */,
 				3E8390E6206597F600512DEA /* Assets.xcassets */,
 				3E8390E8206597F600512DEA /* LaunchScreen.storyboard */,
@@ -288,6 +291,7 @@
 				3E0F960A20659D9000AE450D /* SpotsTableViewCell.swift in Sources */,
 				3E8390E0206597F600512DEA /* AppDelegate.swift in Sources */,
 				82E0D070244339F300785B8C /* Spots.swift in Sources */,
+				828A19F0244B4C9C0048D183 /* Double+roundTo.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
