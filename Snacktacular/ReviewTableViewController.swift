@@ -20,6 +20,18 @@ class ReviewTableViewController: UITableViewController {
     @IBOutlet weak var saveBarButton: UIBarButtonItem!
     @IBOutlet weak var deleteButton: UIButton!
     @IBOutlet weak var buttonsBackgroundView: UIView!
+    @IBOutlet var starButtonCollection: [UIButton]!
+    
+    var rating = 0 {//starting of 0
+        didSet { // execute every time raitng changes
+            for starButton in starButtonCollection {
+                let image = UIImage(named: (starButton.tag < rating ? "star-filled" : "star-empty"))
+                     // meaning, if we have 4 in rating, it will go through 0,1,2,3 as all are less than rating; if tag 4 is not less than 4, it won't go to tag 5
+                starButton.setImage(image, for: .normal)
+            }
+            print(" >>> new rating \(rating)")
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,6 +50,13 @@ class ReviewTableViewController: UITableViewController {
              navigationController?.popViewController(animated: true)
          }
      }
+    
+    @IBAction func starButtonPressed(_ sender: UIButton) {
+        rating = sender.tag + 1 // add one since we are zero indexed
+        //how do we update the star buttons?
+        
+    }
+    
     @IBAction func reviewTitlechanged(_ sender: UITextField) {
     }
     
