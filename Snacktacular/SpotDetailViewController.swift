@@ -19,6 +19,8 @@ class SpotDetailViewController: UIViewController {
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var saveBarButton: UIBarButtonItem!
+    @IBOutlet weak var cancelBarButton: UIBarButtonItem!
     
     var spot: Spot!
     let regionDistance: CLLocationDistance = 750 //750 meters, or about a half a mile
@@ -27,18 +29,50 @@ class SpotDetailViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        //hide keyboard if we tap outside of a field
+        let tap = UITapGestureRecognizer(target: self.view, action: #selector(UIView.endEditing(_:)))
+        tap.cancelsTouchesInView = false // doesn't cancel out of what we just cancelled
+        self.view.addGestureRecognizer(tap)
         
         //        mapView.delegate = self // whenever we have smth to do w/ map, we call main class
         
-        if spot == nil { // we did not pass over spot, meaning we clicked plus button
+        if spot == nil { // we are adding a new record, fields should be editable
             spot = Spot() //declare Spot with all empty value  <called convenience initializer>
-        getLocation()
+            getLocation()
+            
+            //editable field should have a border around them (make UIVIew+addBorder for clarity)
+            nameField.addBorder(width: 0.5, radius: 5.0, color: .blue)
+            addressField.addBorder(width: 0.5, radius: 5.0, color: .red)
+    
+        } else { // viewing an existing spot, so editing should be disabled
+            //disable text editing
+            nameField.isEnabled = false
+            addressField.isEnabled = false
+            //disabled fields should have white background
+            nameField.backgroundColor = UIColor.white // or UIColor.clear
+            addressField.backgroundColor = UIColor.white
+            //"save" and "cancel" button should be hidden
+            saveBarButton.title = "" // hide theh button instead of using isEnabled
+            cancelBarButton.title = ""
+            //hide toolbar so that "look up place" isn't available
+            navigationController?.setToolbarHidden(true, animated: true) // toolbar all disappears , we lose all toolbar so, unhide navigation controller toolbar on the listviewpage viewWillAppear
         }
         
         let region = MKCoordinateRegion(center: spot.coordinate, latitudinalMeters: regionDistance, longitudinalMeters: regionDistance) // centering the map to the region 
         mapView.setRegion(region, animated: true)
         updateUserInterface()
     }
+    @IBAction func textFieldEditingChanged(_ sender: UITextField) {
+        saveBarButton.isEnabled = !(nameField.text == "") // = ! 가 is else statement 과 똑같다
+    }
+    
+    @IBAction func textFieldReturnPressed(_ sender: UITextField) {
+        sender.resignFirstResponder() //sender = textField --> removes done key when anywhere is tapped
+        spot.name = nameField.text!
+        spot.address = addressField.text!
+        updateUserInterface() // saving spot address
+    }
+    
     
     func showAlert(title: String, message: String) {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
@@ -68,6 +102,7 @@ class SpotDetailViewController: UIViewController {
             navigationController?.popViewController(animated: true)
         }
     }
+    
     
     @IBAction func photoButtonPressed(_ sender: UIButton) {
     }
