@@ -22,6 +22,8 @@ class SpotDetailViewController: UIViewController {
     @IBOutlet weak var saveBarButton: UIBarButtonItem!
     @IBOutlet weak var cancelBarButton: UIBarButtonItem!
     
+    var reviews: [Review] = []
+  // same as  var review = [Review]() --> developing an empty array
     var spot: Spot!
     let regionDistance: CLLocationDistance = 750 //750 meters, or about a half a mile
     var locationManager: CLLocationManager!
@@ -43,7 +45,7 @@ class SpotDetailViewController: UIViewController {
             //editable field should have a border around them (make UIVIew+addBorder for clarity)
             nameField.addBorder(width: 0.5, radius: 5.0, color: .blue)
             addressField.addBorder(width: 0.5, radius: 5.0, color: .red)
-    
+            
         } else { // viewing an existing spot, so editing should be disabled
             //disable text editing
             nameField.isEnabled = false
@@ -61,6 +63,28 @@ class SpotDetailViewController: UIViewController {
         let region = MKCoordinateRegion(center: spot.coordinate, latitudinalMeters: regionDistance, longitudinalMeters: regionDistance) // centering the map to the region 
         mapView.setRegion(region, animated: true)
         updateUserInterface()
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) { // preparing segway to adding a new rating
+        spot.name = nameField.text!
+        spot.address = addressField.text!
+        switch segue.identifier ?? "" {
+        case "AddReview" :
+            let navigationController = segue.destination as! UINavigationController
+            let destination = navigationController.viewControllers.first as! ReviewTableViewController // could be reused for segway
+            destination.spot = spot
+            if let selectedIndexPath = tableView.indexPathForSelectedRow {
+                tableView.deselectRow(at: selectedIndexPath, animated: true) //unselected the value we selected before we add a new rating
+            }
+        case "ShowReview" :
+            let destination = segue.destination as! ReviewTableViewController // directly showing the review
+            destination.spot = spot
+            let selectedIndexPath = tableView.indexPathForSelectedRow!  // force unwrapp as we know the only way to go is thru this way
+            destination.review = reviews[selectedIndexPath.row]
+        default:
+            print("*** ERROR: did not have a segue in SpotDetailViewController prepare (for segue:)")
+        }
+        
     }
     @IBAction func textFieldEditingChanged(_ sender: UITextField) {
         saveBarButton.isEnabled = !(nameField.text == "") // = ! 가 is else statement 과 똑같다
