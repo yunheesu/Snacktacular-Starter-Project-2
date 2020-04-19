@@ -108,6 +108,7 @@ class SpotDetailViewController: UIViewController {
     }
     
     @IBAction func reviewButtonPressed(_ sender: UIButton) {
+        performSegue(withIdentifier: "AddReview", sender: nil) // creating a segway to reviewTableViewController
     }
     
     @IBAction func lookupPlacePressed(_ sender: UIBarButtonItem) {
