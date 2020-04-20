@@ -30,44 +30,57 @@ class Review {
         self.documentID = documentID
     }
     
+    convenience init(dictionary: [String: Any]) {
+        
+        let title = dictionary["title"] as! String? ?? ""
+        let text = dictionary["text"] as! String? ?? ""
+        let rating = dictionary["rating"] as! Int? ?? 0
+        let reviewerUserID = dictionary["reviewerUserID"] as! String
+        let date = dictionary["date"] as! Date? ?? Date() //Date() = today's date
+        self.init(title: title, text: text, rating: rating, reviewerUserID: reviewerUserID, date: date, documentID: "")
+        
+    }
+    
     convenience init() {
         let currentUserID = Auth.auth().currentUser?.email ?? "Unknown User"
         self.init(title: "", text: "", rating: 0, reviewerUserID: currentUserID, date: Date(), documentID: "")
     }
-}
-
-func saveData(spot: Spot, completed: @escaping (Bool) -> ()) { //passing spot by spot: Spot method
-    let db = Firestore.firestore() //db = database
     
-    //create the dictionary representing the data we want to save
-    let dataToSave = self.dictionary // go to class, create dictionary what we need to save (what we did on top)!
-    // if we have saved a record, we'll have a documentID
-    if spot.documentID != "" {
-        let ref = db.collection("spots").document(spot.documentID).collection("reviews").document(self.documentID) //documentID: name of the review of the particular area!
-        ref.setData(dataToSave) { (error) in
-            if let error  = error {
-                print("*** ERROR: updating document \(spot.documentID) in spot \(self.documentID) \(error.localizedDescription)")
-                completed(false)
-            }else{
-                print("^^^ Document updated with red ID \(ref.documentID)")
-                completed(true)
+    func saveData(spot: Spot, completed: @escaping (Bool) -> ()) { //passing spot by spot: Spot method
+        let db = Firestore.firestore() //db = database
+        
+        //create the dictionary representing the data we want to save
+        let dataToSave = self.dictionary // go to class, create dictionary what we need to save (what we did on top)!
+        // if we have saved a record, we'll have a documentID
+        if spot.documentID != "" {
+            let ref = db.collection("spots").document(spot.documentID).collection("reviews").document(self.documentID) //documentID: name of the review of the particular area!
+            ref.setData(dataToSave) { (error) in
+                if let error  = error {
+                    print("*** ERROR: updating document \(self.documentID) in spot \(spot.documentID) \(error.localizedDescription)")
+                    completed(false)
+                }else{
+                    print("^^^ Document updated with red ID \(ref.documentID)")
+                    completed(true)
+                }
+                
             }
-            
-        }
-    }else{ // adding new documentID
-        var ref: DocumentReference? = nil // Let firestore create the new document ID
-        ref = db.collection("spots").document(spot.documentID).collection("reviews").addDocument(data: dataToSave) { error in
-            if let error = error {
-                print("*** ERROR: creating new document in spot \(spot.documentID) for new review document ID \(error.localizedDescription)")
-                completed(false)
-            }else{
-                print("^^^ new document created with red ID \(ref?.documentID ?? "unknown")")
-                completed(true)
+        }else{ // adding new documentID
+            var ref: DocumentReference? = nil // Let firestore create the new document ID
+            ref = db.collection("spots").document(spot.documentID).collection("reviews").addDocument(data: dataToSave) { error in
+                if let error = error {
+                    print("*** ERROR: creating new document in spot \(spot.documentID) for new review document ID \(error.localizedDescription)")
+                    completed(false)
+                }else{
+                    print("^^^ new document created with red ID \(ref?.documentID ?? "unknown")")
+                    completed(true)
+                }
+                
+                
             }
-            
-            
         }
     }
 }
+
+
 
 

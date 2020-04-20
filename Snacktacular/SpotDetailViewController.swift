@@ -22,7 +22,7 @@ class SpotDetailViewController: UIViewController {
     @IBOutlet weak var saveBarButton: UIBarButtonItem!
     @IBOutlet weak var cancelBarButton: UIBarButtonItem!
     
-    var reviews: [Review] = []
+    var reviews: Reviews!
   // same as  var review = [Review]() --> developing an empty array
     var spot: Spot!
     let regionDistance: CLLocationDistance = 750 //750 meters, or about a half a mile
@@ -36,8 +36,10 @@ class SpotDetailViewController: UIViewController {
         tap.cancelsTouchesInView = false // doesn't cancel out of what we just cancelled
         self.view.addGestureRecognizer(tap)
         
-        //        mapView.delegate = self // whenever we have smth to do w/ map, we call main class
-        
+        //mapView.delegate = self // whenever we have smth to do w/ map, we call main class
+        tableView.delegate = self
+        tableView.dataSource = self
+            
         if spot == nil { // we are adding a new record, fields should be editable
             spot = Spot() //declare Spot with all empty value  <called convenience initializer>
             getLocation()
@@ -59,10 +61,18 @@ class SpotDetailViewController: UIViewController {
             //hide toolbar so that "look up place" isn't available
             navigationController?.setToolbarHidden(true, animated: true) // toolbar all disappears , we lose all toolbar so, unhide navigation controller toolbar on the listviewpage viewWillAppear
         }
+        reviews = Reviews() //reviews object of class type Reviews
         
         let region = MKCoordinateRegion(center: spot.coordinate, latitudinalMeters: regionDistance, longitudinalMeters: regionDistance) // centering the map to the region 
         mapView.setRegion(region, animated: true)
         updateUserInterface()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        reviews.loadData(spot: spot) {
+            self.tableView.reloadData()
+        }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) { // preparing segway to adding a new rating
@@ -80,7 +90,7 @@ class SpotDetailViewController: UIViewController {
             let destination = segue.destination as! ReviewTableViewController // directly showing the review
             destination.spot = spot
             let selectedIndexPath = tableView.indexPathForSelectedRow!  // force unwrapp as we know the only way to go is thru this way
-            destination.review = reviews[selectedIndexPath.row]
+            destination.review = reviews.reviewArray[selectedIndexPath.row]
         default:
             print("*** ERROR: did not have a segue in SpotDetailViewController prepare (for segue:)")
         }
@@ -259,3 +269,14 @@ extension SpotDetailViewController: CLLocationManagerDelegate { //from the websi
     }
 }
 
+extension SpotDetailViewController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return reviews.reviewArray.count // where table view is shown
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ReviewCell", for: indexPath) as! SpotReviewsTableViewCell
+        cell.review = reviews.reviewArray[indexPath.row]
+        return cell
+    }
+}

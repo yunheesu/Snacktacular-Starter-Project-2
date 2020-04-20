@@ -28,7 +28,7 @@ class ReviewTableViewController: UITableViewController {
         didSet { // execute every time raitng changes
             for starButton in starButtonCollection {
                 let image = UIImage(named: (starButton.tag < rating ? "star-filled" : "star-empty"))
-                     // meaning, if we have 4 in rating, it will go through 0,1,2,3 as all are less than rating; if tag 4 is not less than 4, it won't go to tag 5
+                // meaning, if we have 4 in rating, it will go through 0,1,2,3 as all are less than rating; if tag 4 is not less than 4, it won't go to tag 5
                 starButton.setImage(image, for: .normal)
             }
             review.rating = rating //update automatically
@@ -53,16 +53,16 @@ class ReviewTableViewController: UITableViewController {
         if review == nil {
             review = Review()
         }
-
+        
     }
     func leaveViewController() {
-         let isPresentingInAddMode = presentingViewController is UINavigationController
-         if isPresentingInAddMode {
-             dismiss(animated: true, completion: nil)
-         } else {
-             navigationController?.popViewController(animated: true)
-         }
-     }
+        let isPresentingInAddMode = presentingViewController is UINavigationController
+        if isPresentingInAddMode {
+            dismiss(animated: true, completion: nil)
+        } else {
+            navigationController?.popViewController(animated: true)
+        }
+    }
     
     @IBAction func starButtonPressed(_ sender: UIButton) {
         rating = sender.tag + 1 // add one since we are zero indexed
@@ -93,9 +93,9 @@ class ReviewTableViewController: UITableViewController {
                 self.leaveViewController()
             }else {
                 print("*** ERROR: Couldn't leave this view controller because data wasn't saved")
-
+                
             }
         }
-    
-}
+        
+    }
 }
