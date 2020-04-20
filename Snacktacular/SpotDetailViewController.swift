@@ -22,9 +22,11 @@ class SpotDetailViewController: UIViewController {
     @IBOutlet weak var saveBarButton: UIBarButtonItem!
     @IBOutlet weak var cancelBarButton: UIBarButtonItem!
     
-    var reviews: Reviews!
-  // same as  var review = [Review]() --> developing an empty array
+
     var spot: Spot!
+      var reviews: Reviews!
+    // same as  var review = [Review]() --> developing an empty array
+    var photos: Photos!
     let regionDistance: CLLocationDistance = 750 //750 meters, or about a half a mile
     var locationManager: CLLocationManager!
     var currentLocation: CLLocation!
@@ -39,6 +41,8 @@ class SpotDetailViewController: UIViewController {
         //mapView.delegate = self // whenever we have smth to do w/ map, we call main class
         tableView.delegate = self
         tableView.dataSource = self
+        collectionView.delegate = self
+        collectionView.dataSource = self
             
         if spot == nil { // we are adding a new record, fields should be editable
             spot = Spot() //declare Spot with all empty value  <called convenience initializer>
@@ -62,6 +66,7 @@ class SpotDetailViewController: UIViewController {
             navigationController?.setToolbarHidden(true, animated: true) // toolbar all disappears , we lose all toolbar so, unhide navigation controller toolbar on the listviewpage viewWillAppear
         }
         reviews = Reviews() //reviews object of class type Reviews
+        photos = Photos()
         
         let region = MKCoordinateRegion(center: spot.coordinate, latitudinalMeters: regionDistance, longitudinalMeters: regionDistance) // centering the map to the region 
         mapView.setRegion(region, animated: true)
@@ -96,17 +101,6 @@ class SpotDetailViewController: UIViewController {
         }
         
     }
-    @IBAction func textFieldEditingChanged(_ sender: UITextField) {
-        saveBarButton.isEnabled = !(nameField.text == "") // = ! 가 is else statement 과 똑같다
-    }
-    
-    @IBAction func textFieldReturnPressed(_ sender: UITextField) {
-        sender.resignFirstResponder() //sender = textField --> removes done key when anywhere is tapped
-        spot.name = nameField.text!
-        spot.address = addressField.text!
-        updateUserInterface() // saving spot address
-    }
-    
     
     func showAlert(title: String, message: String) {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
@@ -137,8 +131,31 @@ class SpotDetailViewController: UIViewController {
         }
     }
     
+    func cameraOrLibraryAlert() { // asking access to camera!
+        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        let cameraAction = UIAlertAction(title: "Camera", style: .default, handler: nil)
+        let photoLibraryAction = UIAlertAction(title: "Photo Library", style: .default, handler: nil)
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        alertController.addAction(cameraAction)
+        alertController.addAction(photoLibraryAction)
+        alertController.addAction(cancelAction)
+        present(alertController, animated: true, completion: nil)
+    }
+    
+    @IBAction func textFieldEditingChanged(_ sender: UITextField) {
+        saveBarButton.isEnabled = !(nameField.text == "") // = ! 가 is else statement 과 똑같다
+    }
+    
+    @IBAction func textFieldReturnPressed(_ sender: UITextField) {
+        sender.resignFirstResponder() //sender = textField --> removes done key when anywhere is tapped
+        spot.name = nameField.text!
+        spot.address = addressField.text!
+        updateUserInterface() // saving spot address
+    }
+    
     
     @IBAction func photoButtonPressed(_ sender: UIButton) {
+        cameraOrLibraryAlert() // view whenever it's pressed!
     }
     
     @IBAction func reviewButtonPressed(_ sender: UIButton) {
@@ -279,4 +296,18 @@ extension SpotDetailViewController: UITableViewDelegate, UITableViewDataSource {
         cell.review = reviews.reviewArray[indexPath.row]
         return cell
     }
+}
+extension SpotDetailViewController: UICollectionViewDelegate, UICollectionViewDataSource { // showing photos! needs delegate as well
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return photos.photoArray.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PhotoCell", for: indexPath) as! SpotPhotosCollectionViewCell
+        //configure tableView cell
+        cell.photo = photos.photoArray[indexPath.row]
+        return cell
+    }
+    
+    
 }
