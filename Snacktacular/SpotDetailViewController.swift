@@ -30,6 +30,7 @@ class SpotDetailViewController: UIViewController {
     let regionDistance: CLLocationDistance = 750 //750 meters, or about a half a mile
     var locationManager: CLLocationManager!
     var currentLocation: CLLocation!
+    var imagePicker = UIImagePickerController() // accessing image/photo
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,6 +44,7 @@ class SpotDetailViewController: UIViewController {
         tableView.dataSource = self
         collectionView.delegate = self
         collectionView.dataSource = self
+        imagePicker.delegate = self
             
         if spot == nil { // we are adding a new record, fields should be editable
             spot = Spot() //declare Spot with all empty value  <called convenience initializer>
@@ -133,8 +135,13 @@ class SpotDetailViewController: UIViewController {
     
     func cameraOrLibraryAlert() { // asking access to camera!
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        let cameraAction = UIAlertAction(title: "Camera", style: .default, handler: nil)
-        let photoLibraryAction = UIAlertAction(title: "Photo Library", style: .default, handler: nil)
+        let cameraAction = UIAlertAction(title: "Camera", style: .default) { _ in
+            self.accessCamera()
+        }
+        let photoLibraryAction = UIAlertAction(title: "Photo Library", style: .default) { _ in
+            self.accessLibrary()
+            
+        }
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         alertController.addAction(cameraAction)
         alertController.addAction(photoLibraryAction)
@@ -310,4 +317,34 @@ extension SpotDetailViewController: UICollectionViewDelegate, UICollectionViewDa
     }
     
     
+}
+extension SpotDetailViewController: UINavigationControllerDelegate, UIImagePickerControllerDelegate { //accessing camera + image! write imagepicker.delegate on top
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        let photo = Photo()
+        photo.image = info[UIImagePickerController.InfoKey.originalImage] as! UIImage
+        photos.photoArray.append(photo)
+        dismiss(animated: true) {
+            self.collectionView.reloadData()
+        }
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        dismiss(animated: true, completion: nil)
+    }
+    
+    func accessLibrary() {
+        imagePicker.sourceType = .photoLibrary
+        present(imagePicker, animated: true, completion: nil)
+    }
+    
+    func accessCamera() {
+        if UIImagePickerController.isSourceTypeAvailable(.camera) {
+            imagePicker.sourceType = .camera
+            present(imagePicker, animated: true, completion: nil)
+        }else{
+            showAlert(title: "Camera Not Available", message: "There is no camera available on this device.")
+        }
+        
+    }
 }
